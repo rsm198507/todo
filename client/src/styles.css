@@ -1,0 +1,196 @@
+.field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px;
+    height: calc(100vh - 70px);
+    width: 100%;
+
+
+}
+.popup {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    height: 100px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    background-color: #fff;
+}
+.popup._active {
+    display: flex;
+}
+.popup__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: Arial;
+    font-size: 30px;
+    font-weight: 800;
+    cursor: pointer
+}
+.todo {
+    max-width: 600px;
+    width: 100%;
+    border: 1px solid #d3d3d3;
+    box-shadow: 0 2px 2px 2px rgba(0, 0, 0, .2);
+
+}
+.todo-add {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    border-bottom: 2px solid #d3d3d3;
+}
+.todo-add__img {
+    margin: 0 20px;
+    max-width: 20px;
+    cursor: pointer;
+
+}
+.todo-add__icon {
+    display: block;
+    max-width: 20px;
+    height: 20px;
+    transform: scaleY(.7);
+
+}
+.todo-add__img:hover polygon{
+    fill: #000;
+}
+.todo-add__area {
+    flex-grow: 1;
+}
+
+.input__text {
+    width: 90%;
+    border: none;
+    font-family: Arial, sans-serif;
+    font-size: 26px;
+    font-weight: 400;
+
+}
+.input__text_add::placeholder {
+    font-style: italic;
+    color: #d3d3d3;
+}
+.input__text_login {
+    padding: 0 10px;
+    border: 1px solid black;
+}
+.input__text_login._error {
+    border: 1px solid red;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    border-bottom: 1px solid #d3d3d3;
+}
+.todo-item:hover .todo-item__icon_delete {
+    display: block;
+}
+.todo-item__icon {
+    margin: 0 15px;
+    width: 30px;
+    cursor: pointer;
+}
+.todo-item__icon_delete {
+    width: 15px;
+    display: none;
+}
+.todo-item__title {
+    flex-grow: 1;
+    font-family: Arial, sans-serif;
+    font-size: 26px;
+    font-weight: 400;
+}
+.todo-item__title._done {
+    pointer-events: none;
+}
+.todo-item__title._done .todo-item__text {
+
+    text-decoration: line-through;
+    color: #d6d6d6;
+}
+.todo-item__text {
+    display: inline;
+}
+.todo-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    height: 40px;
+}
+.todo-status__title {
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+}
+.todo-status__title._active {
+    border: 1px solid #d3d3d3;
+    pointer-events: none;
+    border-radius: 3px;
+}
+
+.todo-status__title_margins {
+    margin: 0;
+    padding: 0;
+}
+.todo-status__title_underline:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+.todo-status__filter {
+    display: flex;
+}
+
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 70px;
+    background-color: lightgreen;
+}
+.header__reg {
+    display: flex;
+    justify-content: space-between;
+    max-width: 200px;
+    width: 100%;
+}
+.header__button {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.login {
+
+}
+.login h1 {
+    margin-bottom: 20px;
+    font-size: 26px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: lightgreen;
+    transition: .5s ease;
+}
+.btn:hover {
+    background-color: #65EE77;
+}
