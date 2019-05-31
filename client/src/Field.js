@@ -17,6 +17,8 @@ class Field extends Component {
                 completed: false
             },
             value: '',
+            userID: 333
+
 
         }
     }
@@ -39,10 +41,11 @@ class Field extends Component {
 
     };
 
-    putDataToDB = async text => {
+    putDataToDB = async (text, userID) => {
         return await axios.post("http://localhost:3001/api/data", {
             text: text,
-            checked: false
+            checked: false,
+            userID: userID
         });
     };
 
@@ -52,15 +55,16 @@ class Field extends Component {
         });
     };
 
-    addTask = async (e) => {
+    addTask = (e) => {
         this.setState({value: e.target.value});
 
     };
 
     handleSubmit = async (e) => {
-        let value = this.state.value;
+        let value = this.state.value,
+            userID = this.state.userID;
         if (e.key === 'Enter' && value !== '') {
-            let received = await this.putDataToDB(value);
+            let received = await this.putDataToDB(value, userID);
             if (received) this.getDataFromDb();
             this.setState({value: ''})
         }
@@ -194,14 +198,12 @@ class Field extends Component {
 
         this.setState({
             items: items
-        },
-            () => {
-
-            });
+        });
         return await axios.patch("http://localhost:3001/api/data", {
             _id: item._id,
             text: item.text,
-            checked: item.checked
+            checked: item.checked,
+            //userID: item.userID
         });
     };
 

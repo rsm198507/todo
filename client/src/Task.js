@@ -9,7 +9,8 @@ class Task extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isInput: false
+            isInput: false,
+            userID: 111
         }
     }
     changeStatus = () => {

@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const DataSchema = new Schema(
     {
         text: String,
-        checked: Boolean
+        checked: Boolean,
+        userID: String
     }
 );
 

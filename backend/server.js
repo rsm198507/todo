@@ -97,7 +97,7 @@ router.delete("/data", (req, res) => {
 router.post("/data", (req, res) => {
     let task = new Task();
 
-    const {text, checked} = req.body;
+    const {text, checked, userID} = req.body;
 
     if (!text) {
         return res.json({
@@ -107,6 +107,7 @@ router.post("/data", (req, res) => {
     }
     task.text = text;
     task.checked = checked;
+    task.userID = userID;
     task.save(err => {
         if (err) return res.json({success: false, error: err});
         return res.json({success: true});
