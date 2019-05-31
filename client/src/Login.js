@@ -11,7 +11,9 @@ class Login extends Component {
             password: "",
             error: {
                 status: false,
-                message: ""
+                message: "",
+                mail: false,
+                password: false
             },
             signIn: false
         }
@@ -61,6 +63,7 @@ class Login extends Component {
     checkLogin = async () => {
         let mail = this.state.mail;
         let password = sha256(this.state.password);
+        let error = this.state.error;
         if (this.state.mail === "" || this.state.password === "") {
             this.showPopup(true, "Введите логин и пароль")
             }
@@ -70,6 +73,21 @@ class Login extends Component {
                 this.showPopup(true, "User not found")
             }
         }
+        if(this.state.mail === ""){
+            error.mail = true
+        }
+        else {
+            error.mail = false
+        }
+        if(this.state.password === ""){
+            error.password = true
+        }
+        else {
+            error.password = false
+        }
+        this.setState({
+            error: error
+        })
     };
 
     render() {
@@ -86,7 +104,7 @@ class Login extends Component {
                         <p>
                             E-mail
                         </p>
-                        <input className={`input__text input__text_login ${this.state.error.status ? "_error" : ""}`} type="text"
+                        <input className={`input__text input__text_login ${this.state.error.mail ? "_error" : ""}`} type="text"
                                value={this.state.mail} onChange={this.saveLogin}/>
                         <p>
                             &nbsp;
@@ -96,7 +114,7 @@ class Login extends Component {
                         <p>
                             Password
                         </p>
-                        <input className="input__text input__text_login" type="password"
+                        <input className={`input__text input__text_login ${this.state.error.password ? "_error" : ""}`} type="password"
                                value={this.state.password} onChange={this.savePassword}/>
                         <p>
                             &nbsp;
