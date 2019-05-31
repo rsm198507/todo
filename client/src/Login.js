@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from "axios";
 import Popup from "./Popup";
+
 const sha256 = require('js-sha256');
 
 class Login extends Component {
@@ -18,6 +19,7 @@ class Login extends Component {
             signIn: false
         }
     }
+
     /*
     * change(e) {
     *   this.setState({
@@ -52,9 +54,7 @@ class Login extends Component {
                 mail: this.state.mail
             });
             return user;
-        }
-
-        catch (e) {
+        } catch (e) {
             return e.message;
         }
 
@@ -63,26 +63,31 @@ class Login extends Component {
     checkLogin = async () => {
         let mail = this.state.mail;
         let password = sha256(this.state.password);
+
         let error = this.state.error;
         if (this.state.mail === "" || this.state.password === "") {
-            this.showPopup(true, "Введите логин и пароль")
-            }
-        else {
+            this.showPopup(true, "Enter login and password");
+        } else {
             let user = await this.getUserFromDb();
             if (user.data.data === null) {
-                this.showPopup(true, "User not found")
+                this.showPopup(true, "User not found");
+                return false
+            }
+            if (user.data.data.mail === mail && user.data.data.password === password) {
+                this.showPopup(true, "You sign in");
+            }
+            else {
+                this.showPopup(true, "Login or password in incorrect");
             }
         }
-        if(this.state.mail === ""){
+        if (this.state.mail === "") {
             error.mail = true
-        }
-        else {
+        } else {
             error.mail = false
         }
-        if(this.state.password === ""){
+        if (this.state.password === "") {
             error.password = true
-        }
-        else {
+        } else {
             error.password = false
         }
         this.setState({
@@ -104,7 +109,8 @@ class Login extends Component {
                         <p>
                             E-mail
                         </p>
-                        <input className={`input__text input__text_login ${this.state.error.mail ? "_error" : ""}`} type="text"
+                        <input className={`input__text input__text_login ${this.state.error.mail ? "_error" : ""}`}
+                               type="text"
                                value={this.state.mail} onChange={this.saveLogin}/>
                         <p>
                             &nbsp;
@@ -114,7 +120,8 @@ class Login extends Component {
                         <p>
                             Password
                         </p>
-                        <input className={`input__text input__text_login ${this.state.error.password ? "_error" : ""}`} type="password"
+                        <input className={`input__text input__text_login ${this.state.error.password ? "_error" : ""}`}
+                               type="password"
                                value={this.state.password} onChange={this.savePassword}/>
                         <p>
                             &nbsp;

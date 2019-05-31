@@ -12,7 +12,10 @@ class Login extends Component {
             password:"",
             error: {
                 status: false,
-                message: ""
+                message: "",
+                name: false,
+                mail: false,
+                password: false
             }
         }
     }
@@ -35,29 +38,52 @@ class Login extends Component {
     putUserToDB = async () => {
 
         try {
-            const user =  await axios.post("http://localhost:3001/api/signup", {
-                name: this.state.name,
-                mail: this.state.mail,
-                password: this.state.password
-
-            });
-            if(user.data.data === null) {
-                //console.log("User added to DB");
+            let error = this.state.error;
+            if (this.state.mail === "" || this.state.password === "" || this.state.error.name === ""){
+                this.showPopup(true, "Enter all fields");
             }
             else {
-                console.log("User with this name is already exist");
-                this.showPopup(true);
+                const user =  await axios.post("http://localhost:3001/api/signup", {
+                    name: this.state.name,
+                    mail: this.state.mail,
+                    password: this.state.password
+
+                });
+                if(user.data.data === null) {
+                    this.showPopup(true, "You sign up");
+                }
+                else {
+                    this.showPopup(true, "User already exist");
+                }
             }
-            //console.log("user=", user);
+
+            if (this.state.name === "") {
+                error.name = true
+            } else {
+                error.name = false
+            }
+            if (this.state.mail === "") {
+                error.mail = true
+            } else {
+                error.mail = false
+            }
+            if (this.state.password === "") {
+                error.password = true
+            } else {
+                error.password = false
+            }
+            this.setState({
+                error: error
+            })
         } catch (error) {
             console.log("error in put user to db, ", error);
         }
     };
 
-    showPopup = (status) => {
+    showPopup = (status, message) => {
         let state = this.state;
         state.error.status = status;
-        state.error.message = "Такой пользователь уже есть";
+        state.error.message = message;
         this.setState({
             error: state.error
         });
@@ -74,7 +100,7 @@ class Login extends Component {
                         <p>
                             Name
                         </p>
-                        <input className="input__text input__text_login" type="text"
+                        <input className={`input__text input__text_login ${this.state.error.name ? "_error" : ""}`} type="text"
                                value={this.state.name} onChange={this.saveName} />
                         <p>
                             &nbsp;
@@ -84,7 +110,7 @@ class Login extends Component {
                         <p>
                             E-mail
                         </p>
-                        <input className="input__text input__text_login" type="text"
+                        <input className={`input__text input__text_login ${this.state.error.mail ? "_error" : ""}`} type="text"
                                value={this.state.mail} onChange={this.saveLogin} />
                         <p>
                             &nbsp;
@@ -94,7 +120,7 @@ class Login extends Component {
                         <p>
                             Password
                         </p>
-                        <input className="input__text input__text_login" type="password"
+                        <input className={`input__text input__text_login ${this.state.error.password ? "_error" : ""}`} type="password"
                                value={this.state.password} onChange={this.savePassword} />
                         <p>
                             &nbsp;
