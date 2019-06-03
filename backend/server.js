@@ -87,8 +87,10 @@ router.patch("/data", async (req, res) => {
 });
 
 router.delete("/data", (req, res) => {
+    //console.log(req.body)
     const {id} = req.body;
-    Task.deleteMany({_id: id}, err => {
+    //console.log("req id= ", id);
+    Task.deleteOne({_id: id}, err => {
         if (err) return res.send(err);
         return res.json({success: true});
     });

@@ -33,12 +33,10 @@ class Field extends Component {
             let getTasks = await axios.post("http://localhost:3001/api/tasks", {
                 userID: id
             });
-            console.log("getData= ", id)
-            //console.log("getTasks= ", getTasks.data.data)
             if (getTasks) {
                 for (let item of getTasks.data.data) {
                     item.visible = true
-                    }
+                }
             }
             this.setState({
                 items: getTasks.data.data
@@ -58,9 +56,16 @@ class Field extends Component {
     };
 
     deleteFromDB = async id => {
-        return await axios.delete("http://localhost:3001/api/data", {
-            id: id
-        });
+
+        try {
+            await axios.delete("http://localhost:3001/api/data", { data: {
+                id: id
+            }
+            });
+            //console.log("deleteFromDB= ", id);
+        } catch(e) {
+            console.log(e)
+        }
     };
 
     addTask = (e) => {
@@ -76,18 +81,25 @@ class Field extends Component {
             if (received) this.getDataFromDb(localStorage.getItem(sha256('id')));
             this.setState({value: ''})
         }
-        console.log("id= ", localStorage.getItem(sha256('id')))
     };
 
     removeSingleTask = async (value) => {
-        let objIdToDelete = null;
-        this.state.items.forEach(item => {
-            if (item._id === value._id) {
-                objIdToDelete = item._id;
-            }
-        });
-        let del = await this.deleteFromDB(objIdToDelete);
-        if (del) this.getDataFromDb(localStorage.getItem(sha256('id')));
+        try {
+            let objIdToDelete = null;
+            //console.log("removeSingleTask value= ", value);
+            this.state.items.forEach(item => {
+                if (item._id === value._id) {
+                    objIdToDelete = item._id;
+                }
+            });
+            console.log("objIdToDelete= ", objIdToDelete);
+            await this.deleteFromDB(objIdToDelete);
+            await this.getDataFromDb(localStorage.getItem(sha256('id')));
+        }
+        catch(e) {
+            console.log(e);
+        }
+
     };
     updateSingleTask = async item => {
         let items = this.state.items.slice();
