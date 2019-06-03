@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Task from './Task';
 import axios from "axios";
 
+const sha256 = require('js-sha256');
+
 class Field extends Component {
     constructor(props) {
         super(props);
@@ -17,9 +19,7 @@ class Field extends Component {
                 completed: false
             },
             value: '',
-            userID: 333
-
-
+            userID: localStorage.getItem(sha256('id'))
         }
     }
 
@@ -202,15 +202,15 @@ class Field extends Component {
         return await axios.patch("http://localhost:3001/api/data", {
             _id: item._id,
             text: item.text,
-            checked: item.checked,
+            checked: item.checked
             //userID: item.userID
         });
     };
 
+
     render() {
         return (
             <div className="field">
-
                 <div className="todo">
                     <div className="todo-add">
                         <div className="todo-add__img" onClick={this.doneAllTasks}>
@@ -235,6 +235,8 @@ class Field extends Component {
                                     updateSingleTask={this.updateSingleTask}
                                     removeSingleTask={this.removeSingleTask}
                                     renewSingleTask={this.renewSingleTask}
+                                    userID={this.state.userID}
+                                    saveID={this.saveUserID}
                                     key={`task-${i}`}/>)
                             }
                             return false;

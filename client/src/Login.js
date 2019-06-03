@@ -75,6 +75,8 @@ class Login extends Component {
             }
             if (user.data.data.mail === mail && user.data.data.password === password) {
                 this.showPopup(true, "You sign in");
+                localStorage.setItem(sha256('id'), user.data.data._id);
+                console.log(user.data.data._id);
             }
             else {
                 this.showPopup(true, "Login or password in incorrect");
