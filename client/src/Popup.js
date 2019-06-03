@@ -17,11 +17,8 @@ class Popup extends Component {
                 </div>
                 {
                     localStorage.getItem(sha256('auth')) ?
-                    <div>
-                        <a href={"/"}>Показать задачи</a>
-                    </div>:
+                    document.location.href="/" :
                     <div></div>
-
                 }
                 <p className="popup__close" onClick={this.closePopup}>X</p>
             </div>

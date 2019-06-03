@@ -47,8 +47,8 @@ app.use(bodyParser.json());
 app.use(logger("dev"));
 
 
-router.get("/data", (req, res) => {
-    Task.find((err, data) => {
+router.post("/tasks", (req, res) => {
+    Task.find({userID: req.body.userID}, (err, data) => {
         if (err) return res.json({success: false, error: err});
         return res.json({success: true, data: data});
     });

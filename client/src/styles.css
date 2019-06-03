@@ -168,12 +168,12 @@
 }
 .header__reg {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     max-width: 200px;
     width: 100%;
 }
 .header__button {
-    margin-right: 20px;
+    margin-right: 30px;
     cursor: pointer;
 }
 

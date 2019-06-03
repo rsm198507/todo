@@ -24,20 +24,28 @@ class Field extends Component {
     }
 
     componentDidMount() {
-        this.getDataFromDb();
+        this.getDataFromDb(localStorage.getItem(sha256('id')));
         document.addEventListener('keydown', this.handleSubmit);
     };
 
-    getDataFromDb = () => {
-        fetch("http://localhost:3001/api/data")
-            .then(data => data.json())
-            .then(res => {
-                let data = res.data;
-                for (let item of data) {
-                    item.visible = true
-                }
-                this.setState({items: data})
+    getDataFromDb = async (id) => {
+        try {
+            let getTasks = await axios.post("http://localhost:3001/api/tasks", {
+                userID: id
             });
+            console.log("getData= ", id)
+            //console.log("getTasks= ", getTasks.data.data)
+            if (getTasks) {
+                for (let item of getTasks.data.data) {
+                    item.visible = true
+                    }
+            }
+            this.setState({
+                items: getTasks.data.data
+            })
+        } catch (e) {
+            console.log(e);
+        }
 
     };
 
@@ -65,9 +73,10 @@ class Field extends Component {
             userID = this.state.userID;
         if (e.key === 'Enter' && value !== '') {
             let received = await this.putDataToDB(value, userID);
-            if (received) this.getDataFromDb();
+            if (received) this.getDataFromDb(localStorage.getItem(sha256('id')));
             this.setState({value: ''})
         }
+        console.log("id= ", localStorage.getItem(sha256('id')))
     };
 
     removeSingleTask = async (value) => {
@@ -78,7 +87,7 @@ class Field extends Component {
             }
         });
         let del = await this.deleteFromDB(objIdToDelete);
-        if (del) this.getDataFromDb();
+        if (del) this.getDataFromDb(localStorage.getItem(sha256('id')));
     };
     updateSingleTask = async item => {
         let items = this.state.items.slice();
@@ -93,13 +102,13 @@ class Field extends Component {
         this.setState({
             items: items
         }, () => {
-            if(this.state.select.all) {
+            if (this.state.select.all) {
                 this.selectAllTasks();
             }
-            if(this.state.select.active) {
+            if (this.state.select.active) {
                 this.selectActiveTasks();
             }
-            if(this.state.select.completed) {
+            if (this.state.select.completed) {
                 this.selectCompletedTasks();
             }
         });
@@ -208,8 +217,8 @@ class Field extends Component {
 
 
     render() {
-        if(this.state.auth) {
-        return (
+        if (this.state.auth) {
+            return (
 
                 <div className="field">
                     <div className="todo">
@@ -223,7 +232,8 @@ class Field extends Component {
                             </div>
                             <div className="todo-add__area">
                                 <div className="input">
-                                    <input className="input__text input__text_add" type="text" value={this.state.value}
+                                    <input className="input__text input__text_add" type="text"
+                                           value={this.state.value}
                                            placeholder="What needs to be done?" onChange={this.addTask}/>
                                 </div>
                             </div>
@@ -275,9 +285,9 @@ class Field extends Component {
                 </div>
 
 
-        )}
-        else {
-            return(
+            )
+        } else {
+            return (
                 <div></div>
             )
         }

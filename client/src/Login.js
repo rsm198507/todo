@@ -28,9 +28,6 @@ class Login extends Component {
     * }
     *
     * */
-    // componentDidMount() {
-    //     console.log(this.props.auth)
-    // }
 
     saveLogin = (e) => {
         this.setState({

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {NavLink} from "react-router-dom";
+const sha256 = require('js-sha256');
 
 class Header extends Component {
     constructor(props) {
@@ -7,6 +8,19 @@ class Header extends Component {
         this.state = {
         }
     }
+    logoutUser = async () => {
+        try {
+            localStorage.removeItem(sha256("id"));
+            localStorage.removeItem(sha256("name"));
+            localStorage.removeItem(sha256("auth"));
+            document.location.href="/";
+        }
+        catch(e) {
+            console.log(e);
+        }
+
+
+    };
 
     render() {
         if(this.props.params.auth === 'true'){
@@ -16,10 +30,7 @@ class Header extends Component {
                         Hi, {this.props.params.name}
                     </div>
                     <div className="header__reg">
-                        <NavLink className="header__button" exact to="/">
-                            Tasks
-                        </NavLink>
-                        <NavLink className="header__button" to="/logout">
+                        <NavLink className="header__button" to="/" onClick={this.logoutUser}>
                             Logout
                         </NavLink>
                     </div>
