@@ -10,7 +10,7 @@ class Field extends Component {
         this.state = {
             items: [],
             view: 'todo',
-            auth: true,
+            auth: localStorage.getItem(sha256('auth')),
             selectAll: true,
             total: 0,
             select: {
@@ -203,78 +203,84 @@ class Field extends Component {
             _id: item._id,
             text: item.text,
             checked: item.checked
-            //userID: item.userID
         });
     };
 
 
     render() {
+        if(this.state.auth) {
         return (
-            <div className="field">
-                <div className="todo">
-                    <div className="todo-add">
-                        <div className="todo-add__img" onClick={this.doneAllTasks}>
-                            <svg className="todo-add__icon" x="0px" y="0px"
-                                 width="306px" height="306px" viewBox="0 0 306 306">
-                                <polygon points="270.3,58.65 153,175.95 35.7,58.65 0,94.35 153,247.35 306,94.35"
-                                         fill="#d3d3d3"/>
-                            </svg>
-                        </div>
-                        <div className="todo-add__area">
-                            <div className="input">
-                                <input className="input__text input__text_add" type="text" value={this.state.value}
-                                       placeholder="What needs to be done?" onChange={this.addTask}/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="todo-list">
-                        {this.state.items.map((item, i) => {
-                            if (item.visible === true) {
-                                return (<Task
-                                    item={item}
-                                    updateSingleTask={this.updateSingleTask}
-                                    removeSingleTask={this.removeSingleTask}
-                                    renewSingleTask={this.renewSingleTask}
-                                    userID={this.state.userID}
-                                    saveID={this.saveUserID}
-                                    key={`task-${i}`}/>)
-                            }
-                            return false;
-                        })}
-                    </div>
-                    {this.state.items.length ?
-                        <div className="todo-status">
-                            <div className="todo-status__left">
-                                <p className="todo-status__title todo-status__title_margins">
-                                    {this.calculateItems()} item{(this.calculateItems() > 1) ? "s" : ""} left
-                                </p>
-                            </div>
-                            <div className="todo-status__filter">
-                                <p className={`todo-status__title ${(this.state.select.all) ? '_active' : ''}`}
-                                   onClick={this.selectAllTasks}>
-                                    All
-                                </p>
-                                <p className={`todo-status__title ${(this.state.select.active) ? '_active' : ''}`}
-                                   onClick={this.selectActiveTasks}>
-                                    Active
-                                </p>
-                                <p className={`todo-status__title ${(this.state.select.completed) ? '_active' : ''}`}
-                                   onClick={this.selectCompletedTasks}>
-                                    Completed
-                                </p>
-                            </div>
-                            <div className="todo-status__clear">
-                                <p className="todo-status__title todo-status__title_margins todo-status__title_underline"
-                                   onClick={this.removeDoneTasks}>
-                                    Clear completed
-                                </p>
-                            </div>
-                        </div>
-                        : <div></div>}
 
+                <div className="field">
+                    <div className="todo">
+                        <div className="todo-add">
+                            <div className="todo-add__img" onClick={this.doneAllTasks}>
+                                <svg className="todo-add__icon" x="0px" y="0px"
+                                     width="306px" height="306px" viewBox="0 0 306 306">
+                                    <polygon points="270.3,58.65 153,175.95 35.7,58.65 0,94.35 153,247.35 306,94.35"
+                                             fill="#d3d3d3"/>
+                                </svg>
+                            </div>
+                            <div className="todo-add__area">
+                                <div className="input">
+                                    <input className="input__text input__text_add" type="text" value={this.state.value}
+                                           placeholder="What needs to be done?" onChange={this.addTask}/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="todo-list">
+                            {this.state.items.map((item, i) => {
+                                if (item.visible === true) {
+                                    return (<Task
+                                        item={item}
+                                        updateSingleTask={this.updateSingleTask}
+                                        removeSingleTask={this.removeSingleTask}
+                                        renewSingleTask={this.renewSingleTask}
+                                        key={`task-${i}`}/>)
+                                }
+                                return false;
+                            })}
+                        </div>
+                        {this.state.items.length ?
+                            <div className="todo-status">
+                                <div className="todo-status__left">
+                                    <p className="todo-status__title todo-status__title_margins">
+                                        {this.calculateItems()} item{(this.calculateItems() > 1) ? "s" : ""} left
+                                    </p>
+                                </div>
+                                <div className="todo-status__filter">
+                                    <p className={`todo-status__title ${(this.state.select.all) ? '_active' : ''}`}
+                                       onClick={this.selectAllTasks}>
+                                        All
+                                    </p>
+                                    <p className={`todo-status__title ${(this.state.select.active) ? '_active' : ''}`}
+                                       onClick={this.selectActiveTasks}>
+                                        Active
+                                    </p>
+                                    <p className={`todo-status__title ${(this.state.select.completed) ? '_active' : ''}`}
+                                       onClick={this.selectCompletedTasks}>
+                                        Completed
+                                    </p>
+                                </div>
+                                <div className="todo-status__clear">
+                                    <p className="todo-status__title todo-status__title_margins todo-status__title_underline"
+                                       onClick={this.removeDoneTasks}>
+                                        Clear completed
+                                    </p>
+                                </div>
+                            </div>
+                            : <div></div>}
+
+                    </div>
                 </div>
-            </div>
-        );
+
+
+        )}
+        else {
+            return(
+                <div></div>
+            )
+        }
     }
 }
 

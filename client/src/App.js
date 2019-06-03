@@ -6,36 +6,28 @@ import {Route, NavLink} from 'react-router-dom';
 
 import './reset.css';
 import './styles.css';
+import Header from './Header';
+
+const sha256 = require('js-sha256');
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            auth: true
+            auth: localStorage.getItem(sha256('auth')),
+            name: localStorage.getItem(sha256('name'))
         }
     }
-
     render() {
         return (
             <div>
-                <div className="header">
-                    <div className="header__greet">
-                        Hi, name
-                    </div>
-                    <div className="header__reg">
-                        <NavLink className="header__button" exact to="/">
-                            Home
-                        </NavLink>
-                        <NavLink className="header__button" to="/signin">
-                            Login
-                        </NavLink>
-                        <NavLink className="header__button" to="/signup">
-                            Register
-                        </NavLink>
-                    </div>
-                </div>
+                <Header params={this.state}/>
+
                 <Route path="/" exact component={Field}/>
-                <Route path="/signin" component={Login}/>
+
+                <Route path='/signin' render={() => (
+                    <Login auth={this.state.auth} setAuth={this.setAuth}/>
+                )}/>
                 <Route path="/signup" component={Register}/>
             </div>
         );

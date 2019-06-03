@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+const sha256 = require('js-sha256');
 
 class Popup extends Component {
     constructor(props) {
@@ -14,6 +15,14 @@ class Popup extends Component {
             <div className={`popup ${this.props.error.status ? "_active" : ""}`}>
                 <div className="popup__error"> {this.props.error.message}
                 </div>
+                {
+                    localStorage.getItem(sha256('auth')) ?
+                    <div>
+                        <a href={"/"}>Показать задачи</a>
+                    </div>:
+                    <div></div>
+
+                }
                 <p className="popup__close" onClick={this.closePopup}>X</p>
             </div>
         );

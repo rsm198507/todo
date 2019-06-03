@@ -28,6 +28,10 @@ class Login extends Component {
     * }
     *
     * */
+    // componentDidMount() {
+    //     console.log(this.props.auth)
+    // }
+
     saveLogin = (e) => {
         this.setState({
             mail: e.target.value
@@ -57,9 +61,8 @@ class Login extends Component {
         } catch (e) {
             return e.message;
         }
-
-
     };
+
     checkLogin = async () => {
         let mail = this.state.mail;
         let password = sha256(this.state.password);
@@ -76,7 +79,8 @@ class Login extends Component {
             if (user.data.data.mail === mail && user.data.data.password === password) {
                 this.showPopup(true, "You sign in");
                 localStorage.setItem(sha256('id'), user.data.data._id);
-                console.log(user.data.data._id);
+                localStorage.setItem(sha256('name'), user.data.data.name);
+                localStorage.setItem(sha256('auth'), 'true');
             }
             else {
                 this.showPopup(true, "Login or password in incorrect");
