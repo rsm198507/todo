@@ -19,7 +19,7 @@ class Login extends Component {
                 password: false
             }
         }
-    }
+    };
 
     saveName = (e) => {
         this.setState({
@@ -63,22 +63,9 @@ class Login extends Component {
                 }
 
             }
-
-            if (this.state.name === "") {
-                error.name = true
-            } else {
-                error.name = false
-            }
-            if (this.state.mail === "") {
-                error.mail = true
-            } else {
-                error.mail = false
-            }
-            if (this.state.password === "") {
-                error.password = true
-            } else {
-                error.password = false
-            }
+            error.name = (this.state.name === "") ? true : false;
+            error.mail = (this.state.mail === "") ? true : false;
+            error.password = (this.state.password === "") ? true : false;
             this.setState({
                 error: error
             })

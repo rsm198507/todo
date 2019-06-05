@@ -20,15 +20,6 @@ class Login extends Component {
         }
     }
 
-    /*
-    * change(e) {
-    *   this.setState({
-    *       [e.target.name]: e.target.value
-    * });
-    * }
-    *
-    * */
-
     saveLogin = (e) => {
         this.setState({
             mail: e.target.value
@@ -74,27 +65,20 @@ class Login extends Component {
                 return false
             }
             if (user.data.data.mail === mail && user.data.data.password === password) {
-                this.showPopup(true, "You sign in");
                 localStorage.setItem(sha256('id'), user.data.data._id);
                 localStorage.setItem(sha256('name'), user.data.data.name);
                 localStorage.setItem(sha256('auth'), 'true');
 
                 localStorage.setItem("token", user.data.token);
+                document.location.href="/";
             }
             else {
                 this.showPopup(true, "Login or password in incorrect");
             }
         }
-        if (this.state.mail === "") {
-            error.mail = true
-        } else {
-            error.mail = false
-        }
-        if (this.state.password === "") {
-            error.password = true
-        } else {
-            error.password = false
-        }
+
+        error.mail = (this.state.mail === "") ? true : false;
+        error.password = (this.state.password === "") ? true : false;
         this.setState({
             error: error
         })
@@ -104,12 +88,9 @@ class Login extends Component {
         return (
             <div className="field">
                 <Popup error={this.state.error}
-                       showPopup={this.showPopup}
-                />
-
+                       showPopup={this.showPopup} />
                 <div className="login">
                     <h1>Login form</h1>
-
                     <div className="input">
                         <p>
                             E-mail

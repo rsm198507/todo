@@ -1,18 +1,17 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import doneIcon from './img/done.svg';
 import itemIcon from './img/not-done.svg';
 import delIcon from './img/delete.svg';
-
 
 class Task extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isInput: false
-
         }
-    }
+    };
+
     changeStatus = () => {
         let item = this.props.item;
         item.checked = !this.props.item.checked;
@@ -22,8 +21,8 @@ class Task extends Component {
     removeTask = () => {
         this.props.removeSingleTask(this.props.item);
     };
-    replaceInput = () => {
 
+    replaceInput = () => {
         this.setState({
             isInput: true
         });
@@ -39,11 +38,13 @@ class Task extends Component {
             });
         }
     };
+
     render() {
-        return(
+        return (
             <div className="todo-item">
                 <div className="todo-item__check">
-                    <img className="todo-item__icon" src={(this.props.item.checked) ? doneIcon : itemIcon } alt="" onClick={this.changeStatus}/>
+                    <img className="todo-item__icon" src={(this.props.item.checked) ? doneIcon : itemIcon} alt=""
+                         onClick={this.changeStatus}/>
                 </div>
                 <div className={`todo-item__title ${(this.props.item.checked) ? '_done' : ''}`}>
                     {this.state.isInput && <div className="input">
@@ -54,10 +55,10 @@ class Task extends Component {
                         {this.props.item.text}
                     </p>}
 
-
                 </div>
                 <div className="todo-item__delete">
-                    <img className="todo-item__icon todo-item__icon_delete" src={delIcon} alt="" onClick={this.removeTask}/>
+                    <img className="todo-item__icon todo-item__icon_delete" src={delIcon} alt=""
+                         onClick={this.removeTask}/>
                 </div>
             </div>
         );

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-
 class Popup extends Component {
     constructor(props) {
         super(props);

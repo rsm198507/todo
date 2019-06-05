@@ -2,7 +2,7 @@ import React from 'react';
 import Field from './Field';
 import Login from './Login';
 import Register from './Register';
-import {Route, NavLink} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 
 import './reset.css';
 import './styles.css';

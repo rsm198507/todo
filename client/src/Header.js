@@ -13,8 +13,6 @@ class Header extends Component {
             localStorage.removeItem(sha256("name"));
             localStorage.removeItem(sha256("auth"));
             document.location.href="/";
-
-
     };
 
     render() {

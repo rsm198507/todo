@@ -9,7 +9,6 @@ class Field extends Component {
         super(props);
         this.state = {
             items: [],
-            view: 'todo',
             auth: localStorage.getItem(sha256('auth')),
             selectAll: true,
             total: 0,
@@ -53,21 +52,24 @@ class Field extends Component {
     };
 
     putDataToDB = async (text) => {
-        return await axios.post("http://localhost:3001/api/data", {
-            text: text,
-            checked: false,
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem("token")
-            }
-        });
+        try {
+            return await axios.post("http://localhost:3001/api/data", {
+                text: text,
+                checked: false,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem("token")
+                }
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+
     };
 
-
     deleteFromDB = async id => {
-
-
         try {
             await axios.delete("http://localhost:3001/api/data", {
                 data: {
@@ -85,7 +87,6 @@ class Field extends Component {
 
     addTask = (e) => {
         this.setState({value: e.target.value});
-
     };
 
     handleSubmit = async (e) => {
@@ -99,7 +100,6 @@ class Field extends Component {
 
     removeSingleTask = async (value) => {
         try {
-
             let objIdToDelete = null;
             console.log("removeSingleTask value= ", value);
             this.state.items.forEach(item => {
@@ -107,7 +107,6 @@ class Field extends Component {
                     objIdToDelete = item._id;
                 }
             });
-            //console.log("objIdToDelete= ", objIdToDelete);
             await this.deleteFromDB(objIdToDelete);
             await this.getDataFromDb(localStorage.getItem(sha256('id')));
         } catch (e) {
@@ -227,7 +226,6 @@ class Field extends Component {
                 total++;
             }
         }
-
         return total;
     };
 
@@ -311,11 +309,8 @@ class Field extends Component {
                                 </div>
                             </div>
                             : <div></div>}
-
                     </div>
                 </div>
-
-
             )
         } else {
             return (

@@ -12,11 +12,8 @@ mongoose.set('useFindAndModify', false);
 const API_PORT = 3001;
 const app = express();
 
-// router.use(bodyParser.urlencoded({ extended: false }));
-// router.use(bodyParser.json());
-
 const jwt = require('jsonwebtoken');
-//const bcrypt = require('bcryptjs');
+
 const config = require('./config');
 const sha256 = require('js-sha256');
 
@@ -31,13 +28,10 @@ app.use(function (req, res, next) {
     next();
 });
 
-// app.use(cors());
 const router = express.Router();
 
-// this is our MongoDB database
 const dbRoute = "mongodb+srv://rudenko-serg:!index111@cluster0-mhk9d.mongodb.net/test?retryWrites=true";
 
-// connects our back end code with the database
 mongoose.connect(
     dbRoute,
     {useNewUrlParser: true}
@@ -47,20 +41,14 @@ let db = mongoose.connection;
 
 db.once("open", () => console.log("connected to the database"));
 
-// checks if connection with the database is successful
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// (optional) only made for logging and
-// bodyParser, parses the request body to be a readable json format
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(logger("dev"));
 
 
 router.post("/tasks", VerifyToken, (req, res) => {
-
-    //console.log(req.userId);
-
     Task.find({userID: req.userId}, (err, data) => {
         if (err) return res.json({success: false, error: err});
         return res.json({success: true, data: data});
@@ -76,32 +64,14 @@ router.patch("/data", VerifyToken, async (req, res) => {
         task.text = text;
         task.checked = checked;
         await task.save();
-
         res.json({success: true});
     } catch (err) {
         console.log(err);
     }
-
-
-    // Task.findById({_id: req.userId})
-    //     .then(item => {
-    //         item.text = text;
-    //         item.checked = checked;
-    //         return item.save();
-    //     })
-    //     .then(() => {
-    //         res.json({success: true});
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     });
 });
 
 router.delete("/data", VerifyToken, (req, res) => {
-
-
     Task.deleteOne({_id: req.body.id}, err => {
-
         if (err) return res.send(err);
         return res.json({success: true});
     });
@@ -110,9 +80,6 @@ router.delete("/data", VerifyToken, (req, res) => {
 router.post("/data", VerifyToken, (req, res) => {
     let task = new Task();
     const {text, checked} = req.body;
-
-
-
     if (!text) {
         return res.json({
             success: false,
@@ -129,9 +96,7 @@ router.post("/data", VerifyToken, (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-
     try {
-
         let user = new User();
 
         const {name, mail, password} = req.body;
@@ -145,9 +110,7 @@ router.post("/signup", async (req, res) => {
 
         const findUser = await User.findOne({mail: mail}, (err, data) => {
             if (err) return res.json({success: false, error: err});
-            if (data) return  res.json({success: false, error: "Already exists."})
-
-            //return res.json({success: true, data: data});
+            if (data) return res.json({success: false, error: "Already exists."})
         });
         if (findUser === null) {
             User.create({
@@ -157,22 +120,17 @@ router.post("/signup", async (req, res) => {
                 },
                 function (err, user) {
                     if (err) return res.status(500).send("There was a problem registering the user`.");
-
-                    // if user is registered without errors
-                    // create a token
                     let token = jwt.sign({id: user._id}, config.secret, {
                         expiresIn: 86400 // expires in 24 hours
                     });
 
                     res.status(200).send({auth: true, token: token}); //res.token
                 });
-
         }
 
     } catch (e) {
         console.log(e);
     }
-
 });
 
 router.post("/signin", async (req, res) => {
@@ -182,12 +140,9 @@ router.post("/signin", async (req, res) => {
             if (err) return res.status(500).send('Error on the server.');
             if (!data) return res.status(404).send('No user found.');
 
-
             const token = jwt.sign({id: data._id}, config.secret, {
                 expiresIn: 86400
             });
-
-
             res.status(200).send({auth: true, token: token, data: data});
         });
 
@@ -197,9 +152,6 @@ router.post("/signin", async (req, res) => {
     }
 });
 
-
 app.use("/api", router);
 
-
-// launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
