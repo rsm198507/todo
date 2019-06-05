@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from "axios";
 import Popup from "./Popup";
 
+const sha256 = require('js-sha256');
 
 class Login extends Component {
     constructor(props) {
@@ -47,14 +48,20 @@ class Login extends Component {
                     name: this.state.name,
                     mail: this.state.mail,
                     password: this.state.password
-
                 });
-                if(user.data.data === null) {
-                    this.showPopup(true, "You sign up");
+
+                if (user.data.error)  this.showPopup(true, user.data.error);
+                if(user.data.token) {
+
+                    localStorage.setItem(sha256('id'), JSON.parse(user.config.data)._id);
+                    localStorage.setItem(sha256('name'), JSON.parse(user.config.data).name);
+                    localStorage.setItem(sha256('auth'), 'true');
+
+                    localStorage.setItem("token", user.data.token);
+
+                    document.location.href="/";
                 }
-                else {
-                    this.showPopup(true, "User already exist");
-                }
+
             }
 
             if (this.state.name === "") {

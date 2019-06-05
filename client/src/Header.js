@@ -8,16 +8,11 @@ class Header extends Component {
         this.state = {
         }
     }
-    logoutUser = async () => {
-        try {
+    logoutUser = () => {
             localStorage.removeItem(sha256("id"));
             localStorage.removeItem(sha256("name"));
             localStorage.removeItem(sha256("auth"));
             document.location.href="/";
-        }
-        catch(e) {
-            console.log(e);
-        }
 
 
     };

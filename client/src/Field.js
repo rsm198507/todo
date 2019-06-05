@@ -32,6 +32,11 @@ class Field extends Component {
         try {
             let getTasks = await axios.post("http://localhost:3001/api/tasks", {
                 userID: id
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem("token")
+                }
             });
             if (getTasks) {
                 for (let item of getTasks.data.data) {
@@ -47,23 +52,33 @@ class Field extends Component {
 
     };
 
-    putDataToDB = async (text, userID) => {
+    putDataToDB = async (text) => {
         return await axios.post("http://localhost:3001/api/data", {
             text: text,
             checked: false,
-            userID: userID
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem("token")
+            }
         });
     };
 
+
     deleteFromDB = async id => {
 
+
         try {
-            await axios.delete("http://localhost:3001/api/data", { data: {
-                id: id
-            }
+            await axios.delete("http://localhost:3001/api/data", {
+                data: {
+                    id: id
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem("token")
+                }
             });
-            //console.log("deleteFromDB= ", id);
-        } catch(e) {
+        } catch (e) {
             console.log(e)
         }
     };
@@ -74,10 +89,9 @@ class Field extends Component {
     };
 
     handleSubmit = async (e) => {
-        let value = this.state.value,
-            userID = this.state.userID;
+        let value = this.state.value;
         if (e.key === 'Enter' && value !== '') {
-            let received = await this.putDataToDB(value, userID);
+            let received = await this.putDataToDB(value);
             if (received) this.getDataFromDb(localStorage.getItem(sha256('id')));
             this.setState({value: ''})
         }
@@ -85,18 +99,18 @@ class Field extends Component {
 
     removeSingleTask = async (value) => {
         try {
+
             let objIdToDelete = null;
-            //console.log("removeSingleTask value= ", value);
+            console.log("removeSingleTask value= ", value);
             this.state.items.forEach(item => {
                 if (item._id === value._id) {
                     objIdToDelete = item._id;
                 }
             });
-            console.log("objIdToDelete= ", objIdToDelete);
+            //console.log("objIdToDelete= ", objIdToDelete);
             await this.deleteFromDB(objIdToDelete);
             await this.getDataFromDb(localStorage.getItem(sha256('id')));
-        }
-        catch(e) {
+        } catch (e) {
             console.log(e);
         }
 
@@ -128,6 +142,11 @@ class Field extends Component {
             _id: objIdToUpdate,
             text: item.text,
             checked: item.checked
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem("token")
+            }
         });
     };
     doneAllTasks = async () => {

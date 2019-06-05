@@ -78,6 +78,8 @@ class Login extends Component {
                 localStorage.setItem(sha256('id'), user.data.data._id);
                 localStorage.setItem(sha256('name'), user.data.data.name);
                 localStorage.setItem(sha256('auth'), 'true');
+
+                localStorage.setItem("token", user.data.token);
             }
             else {
                 this.showPopup(true, "Login or password in incorrect");

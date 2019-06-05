@@ -1,16 +1,26 @@
-const config = require('./key');
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
+
 const Task = require("./tasks");
 const User = require("./users");
-const sha256 = require('js-sha256');
-const jwt = require('jsonwebtoken');
+
 mongoose.set('useFindAndModify', false);
+
 const API_PORT = 3001;
 const app = express();
+
+// router.use(bodyParser.urlencoded({ extended: false }));
+// router.use(bodyParser.json());
+
+const jwt = require('jsonwebtoken');
+//const bcrypt = require('bcryptjs');
+const config = require('./config');
+const sha256 = require('js-sha256');
+
+const VerifyToken = require('./VerifyToken');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -47,59 +57,61 @@ app.use(bodyParser.json());
 app.use(logger("dev"));
 
 
-router.post("/tasks", (req, res) => {
-    Task.find({userID: req.body.userID}, (err, data) => {
+router.post("/tasks", VerifyToken, (req, res) => {
+
+    //console.log(req.userId);
+
+    Task.find({userID: req.userId}, (err, data) => {
         if (err) return res.json({success: false, error: err});
         return res.json({success: true, data: data});
     });
 });
 
 
-
-router.patch("/data", async (req, res) => {
-
-    const {_id, text, checked} = req.body;
+router.patch("/data", VerifyToken, async (req, res) => {
+    const {text, checked} = req.body;
 
     try {
-        const task = await Task.findById({_id: _id});
+        const task = await Task.findById({_id: req.body._id});
         task.text = text;
         task.checked = checked;
-        const result = await task.save();
+        await task.save();
 
         res.json({success: true});
-    } catch (e) {
+    } catch (err) {
         console.log(err);
     }
 
 
-    Task.findById({_id: _id})
-        .then(item => {
-            item.text = text;
-            item.checked = checked;
-            return item.save();
-        })
-        .then(() => {
-            res.json({success: true});
-        })
-        .catch(err => {
-            console.log(err);
-        });
+    // Task.findById({_id: req.userId})
+    //     .then(item => {
+    //         item.text = text;
+    //         item.checked = checked;
+    //         return item.save();
+    //     })
+    //     .then(() => {
+    //         res.json({success: true});
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     });
 });
 
-router.delete("/data", (req, res) => {
-    //console.log(req.body)
-    const {id} = req.body;
-    //console.log("req id= ", id);
-    Task.deleteOne({_id: id}, err => {
+router.delete("/data", VerifyToken, (req, res) => {
+
+
+    Task.deleteOne({_id: req.body.id}, err => {
+
         if (err) return res.send(err);
         return res.json({success: true});
     });
 });
 
-router.post("/data", (req, res) => {
+router.post("/data", VerifyToken, (req, res) => {
     let task = new Task();
+    const {text, checked} = req.body;
 
-    const {text, checked, userID} = req.body;
+
 
     if (!text) {
         return res.json({
@@ -109,7 +121,7 @@ router.post("/data", (req, res) => {
     }
     task.text = text;
     task.checked = checked;
-    task.userID = userID;
+    task.userID = req.userId;
     task.save(err => {
         if (err) return res.json({success: false, error: err});
         return res.json({success: true});
@@ -133,14 +145,28 @@ router.post("/signup", async (req, res) => {
 
         const findUser = await User.findOne({mail: mail}, (err, data) => {
             if (err) return res.json({success: false, error: err});
-            return res.json({success: true, data: data});
+            if (data) return  res.json({success: false, error: "Already exists."})
+
+            //return res.json({success: true, data: data});
         });
         if (findUser === null) {
-            user.name = name;
-            user.mail = mail;
-            user.password = sha256(password);
-            user.save();
-            //console.log("You can register");
+            User.create({
+                    name: name,
+                    mail: mail,
+                    password: sha256(password)
+                },
+                function (err, user) {
+                    if (err) return res.status(500).send("There was a problem registering the user`.");
+
+                    // if user is registered without errors
+                    // create a token
+                    let token = jwt.sign({id: user._id}, config.secret, {
+                        expiresIn: 86400 // expires in 24 hours
+                    });
+
+                    res.status(200).send({auth: true, token: token}); //res.token
+                });
+
         }
 
     } catch (e) {
@@ -151,27 +177,26 @@ router.post("/signup", async (req, res) => {
 
 router.post("/signin", async (req, res) => {
     const {mail} = req.body;
-    //console.log(req.body)
     try {
         await User.findOne({mail: mail}, (err, data) => {
-            if (err) return res.json({success: false, error: err});
-            return res.json({success: true, data: data});
+            if (err) return res.status(500).send('Error on the server.');
+            if (!data) return res.status(404).send('No user found.');
+
+
+            const token = jwt.sign({id: data._id}, config.secret, {
+                expiresIn: 86400
+            });
+
+
+            res.status(200).send({auth: true, token: token, data: data});
         });
-        // const user = await User.findOne({mail: mail});
-        // //console.log(user)
-        // if (!user) return res.status(404).send('User not found');
-        // return res.json({user});
+
     } catch (e) {
         res.status(500).send('Internal server error');
         console.log(e);
     }
 });
 
-router.post("/getToken", (req, res) => {
-
-});
-
-// append /api for our http requests
 
 app.use("/api", router);
 
