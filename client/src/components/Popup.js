@@ -5,16 +5,13 @@ class Popup extends Component {
         super(props);
         this.state = {}
     }
-    closePopup = () => {
-        this.props.showPopup(false);
-    };
     render() {
         return (
             <div className={`popup ${this.props.error.status ? "_active" : ""}`}>
                 <div className="popup__error"> {this.props.error.message}
                 </div>
 
-                <p className="popup__close" onClick={this.closePopup}>X</p>
+                <p className="popup__close" onClick={this.props.showPopup(false)}>X</p>
             </div>
         );
     }

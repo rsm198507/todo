@@ -4,8 +4,8 @@ import Login from './Login';
 import Register from './Register';
 import {Route} from 'react-router-dom';
 
-import './reset.css';
-import './styles.css';
+import '../styles/reset.css';
+import '../styles/styles.css';
 import Header from './Header';
 
 const sha256 = require('js-sha256');
@@ -26,7 +26,7 @@ class App extends React.Component {
                 <Route path="/" exact component={Field}/>
 
                 <Route path='/signin' render={() => (
-                    <Login auth={this.state.auth} setAuth={this.setAuth}/>
+                    <Login auth={this.state.auth}/>
                 )}/>
                 <Route path="/signup" component={Register}/>
             </div>

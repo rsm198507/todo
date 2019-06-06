@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 
-import doneIcon from './img/done.svg';
-import itemIcon from './img/not-done.svg';
-import delIcon from './img/delete.svg';
+import doneIcon from '../img/done.svg';
+import itemIcon from '../img/not-done.svg';
+import delIcon from '../img/delete.svg';
 
 class Task extends Component {
     constructor(props) {

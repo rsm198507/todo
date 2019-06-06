@@ -4,8 +4,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 
-const Task = require("./tasks");
-const User = require("./users");
+const Task = require("./models/tasks");
+const User = require("./models/users");
 
 mongoose.set('useFindAndModify', false);
 
@@ -15,9 +15,10 @@ const app = express();
 const jwt = require('jsonwebtoken');
 
 const config = require('./config');
+const dbRoute = require('./db');
 const sha256 = require('js-sha256');
 
-const VerifyToken = require('./VerifyToken');
+const VerifyToken = require('./helpers/VerifyToken');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -30,7 +31,8 @@ app.use(function (req, res, next) {
 
 const router = express.Router();
 
-const dbRoute = "mongodb+srv://rudenko-serg:!index111@cluster0-mhk9d.mongodb.net/test?retryWrites=true";
+//require('./routes/data-patch')(app);
+
 
 mongoose.connect(
     dbRoute,
@@ -48,14 +50,6 @@ app.use(bodyParser.json());
 app.use(logger("dev"));
 
 
-router.post("/tasks", VerifyToken, (req, res) => {
-    Task.find({userID: req.userId}, (err, data) => {
-        if (err) return res.json({success: false, error: err});
-        return res.json({success: true, data: data});
-    });
-});
-
-
 router.patch("/data", VerifyToken, async (req, res) => {
     const {text, checked} = req.body;
 
@@ -69,6 +63,16 @@ router.patch("/data", VerifyToken, async (req, res) => {
         console.log(err);
     }
 });
+
+router.post("/tasks", VerifyToken, (req, res) => {
+    Task.find({userID: req.userId}, (err, data) => {
+        if (err) return res.json({success: false, error: err});
+        return res.json({success: true, data: data});
+    });
+});
+
+
+
 
 router.delete("/data", VerifyToken, (req, res) => {
     Task.deleteOne({_id: req.body.id}, err => {

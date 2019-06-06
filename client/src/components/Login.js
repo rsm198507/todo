@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from "axios";
+import axios from "axios/index";
 import Popup from "./Popup";
 
 const sha256 = require('js-sha256');
@@ -45,7 +45,6 @@ class Login extends Component {
             const user = await axios.post("http://localhost:3001/api/signin", {
                 mail: this.state.mail
             });
-            console.log("getUserFromDb user= ", user);
             return user;
         } catch (err) {
             return err.message;
@@ -53,14 +52,14 @@ class Login extends Component {
     };
 
     checkLogin = async () => {
-        let mail = this.state.mail;
-        let password = sha256(this.state.password);
+        const mail = this.state.mail;
+        const password = sha256(this.state.password);
 
-        let error = this.state.error;
+        const error = this.state.error;
         if (this.state.mail === "" || this.state.password === "") {
             this.showPopup(true, "Enter login and password");
         } else {
-            let user = await this.getUserFromDb();
+            const user = await this.getUserFromDb();
             if (user.data.message === "User not found") {
                 this.showPopup(true, user.data.message);
                 return false

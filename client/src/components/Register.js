@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from "axios";
+import axios from "axios/index";
 import Popup from "./Popup";
 
 const sha256 = require('js-sha256');
@@ -39,7 +39,7 @@ class Login extends Component {
     putUserToDB = async () => {
 
         try {
-            let error = this.state.error;
+            const error = this.state.error;
             if (this.state.mail === "" || this.state.password === "" || this.state.error.name === ""){
                 this.showPopup(true, "Enter all fields");
             }
@@ -51,7 +51,7 @@ class Login extends Component {
                 });
 
                 if (user.data.error)  this.showPopup(true, user.data.error);
-                if(user.data.token) {
+                else if(user.data.token) {
 
                     localStorage.setItem(sha256('id'), JSON.parse(user.config.data)._id);
                     localStorage.setItem(sha256('name'), JSON.parse(user.config.data).name);

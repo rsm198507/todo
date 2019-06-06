@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Task from './Task';
-import axios from "axios";
+import axios from "axios/index";
 
 const sha256 = require('js-sha256');
 
@@ -12,11 +12,12 @@ class Field extends Component {
             auth: localStorage.getItem(sha256('auth')),
             selectAll: true,
             total: 0,
-            select: {
-                all: true,
-                active: false,
-                completed: false
-            },
+            select: '',
+            // select: {
+            //     all: true,
+            //     active: false,
+            //     completed: false
+            // },
             value: '',
             userID: localStorage.getItem(sha256('id'))
         }
@@ -29,7 +30,7 @@ class Field extends Component {
 
     getDataFromDb = async (id) => {
         try {
-            let getTasks = await axios.post("http://localhost:3001/api/tasks", {
+            const getTasks = await axios.post("http://localhost:3001/api/tasks", {
                 userID: id
             }, {
                 headers: {
@@ -90,9 +91,9 @@ class Field extends Component {
     };
 
     handleSubmit = async (e) => {
-        let value = this.state.value;
+        const value = this.state.value;
         if (e.key === 'Enter' && value !== '') {
-            let received = await this.putDataToDB(value);
+            const received = await this.putDataToDB(value);
             if (received) this.getDataFromDb(localStorage.getItem(sha256('id')));
             this.setState({value: ''})
         }
@@ -116,24 +117,22 @@ class Field extends Component {
     updateSingleTask = async item => {
         let items = this.state.items.slice();
 
-        let objIdToUpdate = null;
+        let objIdToUpdate = "";
         this.state.items.forEach(element => {
             if (item._id === element._id) {
                 objIdToUpdate = element._id;
                 item.checked = element.checked;
             }
+
         });
         this.setState({
             items: items
         }, () => {
-            if (this.state.select.all) {
-                this.selectAllTasks();
-            }
-            if (this.state.select.active) {
-                this.selectActiveTasks();
-            }
-            if (this.state.select.completed) {
-                this.selectCompletedTasks();
+            switch (this.state.select) {
+                case "all": {this.selectAllTasks(); break;}
+                case "active": {this.selectActiveTasks(); break;}
+                case "completed": {this.selectCompletedTasks(); break;}
+                default: {break;}
             }
         });
         return await axios.patch("http://localhost:3001/api/data", {
@@ -180,11 +179,7 @@ class Field extends Component {
         }
         this.setState({
             items: items,
-            select: {
-                all: true,
-                active: false,
-                completed: false
-            }
+            select: 'all'
         });
     };
     selectActiveTasks = () => {
@@ -195,11 +190,7 @@ class Field extends Component {
         }
         this.setState({
             items: items,
-            select: {
-                all: false,
-                active: true,
-                completed: false
-            }
+            select: 'active'
         });
     };
     selectCompletedTasks = async () => {
@@ -210,11 +201,8 @@ class Field extends Component {
         }
         this.setState({
             items: items,
-            select: {
-                all: false,
-                active: false,
-                completed: true
-            }
+            select: 'completed'
+
         });
     };
     calculateItems = () => {
@@ -247,7 +235,6 @@ class Field extends Component {
     render() {
         if (this.state.auth) {
             return (
-
                 <div className="field">
                     <div className="todo">
                         <div className="todo-add">
@@ -287,15 +274,15 @@ class Field extends Component {
                                     </p>
                                 </div>
                                 <div className="todo-status__filter">
-                                    <p className={`todo-status__title ${(this.state.select.all) ? '_active' : ''}`}
+                                    <p className={`todo-status__title ${(this.state.select === 'all') ? '_active' : ''}`}
                                        onClick={this.selectAllTasks}>
                                         All
                                     </p>
-                                    <p className={`todo-status__title ${(this.state.select.active) ? '_active' : ''}`}
+                                    <p className={`todo-status__title ${(this.state.select === 'active') ? '_active' : ''}`}
                                        onClick={this.selectActiveTasks}>
                                         Active
                                     </p>
-                                    <p className={`todo-status__title ${(this.state.select.completed) ? '_active' : ''}`}
+                                    <p className={`todo-status__title ${(this.state.select === 'completed') ? '_active' : ''}`}
                                        onClick={this.selectCompletedTasks}>
                                         Completed
                                     </p>
