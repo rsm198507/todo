@@ -138,7 +138,7 @@ router.post("/signin", async (req, res) => {
     try {
         await User.findOne({mail: mail}, (err, data) => {
             if (err) return res.status(500).send('Error on the server.');
-            if (!data) return res.status(404).send('No user found.');
+            if (!data) return res.status(200).send({message: "User not found"});
 
             const token = jwt.sign({id: data._id}, config.secret, {
                 expiresIn: 86400

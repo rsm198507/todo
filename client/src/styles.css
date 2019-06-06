@@ -93,23 +93,31 @@
 .todo-item {
     display: flex;
     align-items: center;
+    position: relative;
     height: 60px;
     border-bottom: 1px solid #d3d3d3;
+}
+.todo-item__container {
+    display: flex;
+    width: 100%;
 }
 .todo-item:hover .todo-item__icon_delete {
     display: block;
 }
 .todo-item__icon {
+
     margin: 0 15px;
     width: 30px;
     cursor: pointer;
+}
+.todo-item__delete {
 }
 .todo-item__icon_delete {
     width: 15px;
     display: none;
 }
 .todo-item__title {
-    flex-grow: 1;
+    /*flex-grow: 1;*/
     font-family: Arial, sans-serif;
     font-size: 26px;
     font-weight: 400;

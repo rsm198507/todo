@@ -45,9 +45,10 @@ class Login extends Component {
             const user = await axios.post("http://localhost:3001/api/signin", {
                 mail: this.state.mail
             });
+            console.log("getUserFromDb user= ", user);
             return user;
-        } catch (e) {
-            return e.message;
+        } catch (err) {
+            return err.message;
         }
     };
 
@@ -60,19 +61,16 @@ class Login extends Component {
             this.showPopup(true, "Enter login and password");
         } else {
             let user = await this.getUserFromDb();
-            if (user.data.data === null) {
-                this.showPopup(true, "User not found");
+            if (user.data.message === "User not found") {
+                this.showPopup(true, user.data.message);
                 return false
-            }
-            if (user.data.data.mail === mail && user.data.data.password === password) {
+            } else if (user.data.data.mail === mail && user.data.data.password === password) {
                 localStorage.setItem(sha256('id'), user.data.data._id);
                 localStorage.setItem(sha256('name'), user.data.data.name);
                 localStorage.setItem(sha256('auth'), 'true');
-
                 localStorage.setItem("token", user.data.token);
-                document.location.href="/";
-            }
-            else {
+                document.location.href = "/";
+            } else {
                 this.showPopup(true, "Login or password in incorrect");
             }
         }
@@ -88,7 +86,7 @@ class Login extends Component {
         return (
             <div className="field">
                 <Popup error={this.state.error}
-                       showPopup={this.showPopup} />
+                       showPopup={this.showPopup}/>
                 <div className="login">
                     <h1>Login form</h1>
                     <div className="input">

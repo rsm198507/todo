@@ -38,22 +38,27 @@ class Task extends Component {
             });
         }
     };
-
+    stopPropagation = (e) => {
+      e.stopPropagation();
+    };
     render() {
         return (
             <div className="todo-item">
-                <div className="todo-item__check">
-                    <img className="todo-item__icon" src={(this.props.item.checked) ? doneIcon : itemIcon} alt=""
-                         onClick={this.changeStatus}/>
-                </div>
-                <div className={`todo-item__title ${(this.props.item.checked) ? '_done' : ''}`}>
-                    {this.state.isInput && <div className="input">
-                        <input className="input__text input__text_add" type="text"
-                               value={this.props.item.text} onKeyDown={this.saveTask} onChange={this.updateTask}/>
-                    </div>}
-                    {!this.state.isInput && <p className="todo-item__text" onDoubleClick={this.replaceInput}>
-                        {this.props.item.text}
-                    </p>}
+                <div className="todo-item__container" onClick={this.changeStatus}>
+                    <div className="todo-item__check">
+                        <img className="todo-item__icon" src={(this.props.item.checked) ? doneIcon : itemIcon} alt=""
+                             />
+                    </div>
+                    <div className={`todo-item__title ${(this.props.item.checked) ? '_done' : ''}`} onClick={this.stopPropagation}>
+                        {this.state.isInput && <div className="input">
+                            <input className="input__text input__text_add" type="text"
+                                   value={this.props.item.text} onKeyDown={this.saveTask} onChange={this.updateTask}/>
+                        </div>}
+                        {!this.state.isInput && <p className="todo-item__text" onDoubleClick={this.replaceInput}>
+                            {this.props.item.text}
+                        </p>}
+
+                    </div>
 
                 </div>
                 <div className="todo-item__delete">

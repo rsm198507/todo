@@ -101,7 +101,6 @@ class Field extends Component {
     removeSingleTask = async (value) => {
         try {
             let objIdToDelete = null;
-            console.log("removeSingleTask value= ", value);
             this.state.items.forEach(item => {
                 if (item._id === value._id) {
                     objIdToDelete = item._id;
